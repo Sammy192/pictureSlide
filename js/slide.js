@@ -2,19 +2,37 @@ export default class Slide {
   constructor(slide, wrapper) {
     this.slide = document.querySelector(slide);
     this.wrapper = document.querySelector(wrapper);
+    this.dist = { finalPosition: 0, startX: 0, movement: 0 }
+
   }
 
+  moveSlide(distX) {
+    this.dist.movePosition = distX;
+    this.slide.style.transform = `translate3d(${this.distX}px, 0, 0)`;
+  }
+
+  updatePosition(clientX) {
+    this.dist.movement = (this.dist.startX - clientX) * 1.6;
+    return this.dist.finalPosition - this.dist.movement;
+  }
+
+  //evento que ocorreu no click do mouse
   onStart(event) {
     event.preventDefault();
     this.wrapper.addEventListener('mousemove', this.onMove);
+
+    //pega valor da posicao onde ocorreu o click na tela
+    this.dist.startX = event.clientX;
   }
 
   onMove(event) {
-
+    const finalPosition = event.updatePosition(event.clientX);
+    this.moveSlide(finalPosition);
   }
 
   onEnd() {
     this.wrapper.removeEventListener('mousemove', this.onMove);
+    this.dist.finalPosition = this.dist.movePosition;
   }
   
   addSlideEvents() {
